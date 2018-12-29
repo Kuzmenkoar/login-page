@@ -1,0 +1,8 @@
+/node_modules
+build/
+bin/
+node_modules/
+compiled/
+/installs
+docs/
+coverage/

@@ -1,0 +1,47 @@
+.spinner {
+  &__animation {
+    display: inline-flex;
+    content: '';
+    box-sizing: border-box;
+    border-radius: 50%;
+    border: 2px solid #ccc;
+    border-top-color: #07d;
+    animation: spinner .6s linear infinite;
+
+    &--small {
+      width: 15px;
+      height: 15px;
+      min-width: 15px;
+      min-height: 15px;
+    }
+    &--medium {
+      width: 35px;
+      height: 35px;
+      min-width: 35px;
+      min-height: 35px;
+    }
+    &--large {
+      width: 60px;
+      height: 60px;
+      min-width: 60px;
+      min-height: 60px;
+    }
+  }
+
+  &--centered {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
+
+  &__message {
+    margin-left: 10px;
+  }
+}
+
+@keyframes spinner {
+  to {
+    transform: rotate(360deg)
+  }
+}

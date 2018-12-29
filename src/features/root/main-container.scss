@@ -1,0 +1,21 @@
+.main-container {
+
+}
+
+.table {
+  &__row {
+    display: flex;
+  }
+
+  &__id-column {
+    width: 20%;
+  }
+
+  &__name {
+    width: 30%;
+  }
+
+  &__is-open {
+    width: 30%;
+  }
+}
