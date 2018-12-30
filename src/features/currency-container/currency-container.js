@@ -5,6 +5,7 @@ import AppBar from '@material-ui/core/AppBar';
 
 import './currency-container.scss';
 import CurrencyConverter from './currency-converter/currency-converter';
+import HistoryRates from './historical-rates/historical-rates';
 
 class CurrencyContainer extends Component {
   state = {
@@ -25,7 +26,7 @@ class CurrencyContainer extends Component {
           </Tabs>
         </AppBar>
         {this.state.tab === 0 && <CurrencyConverter />}
-        {this.state.tab === 1 && 'Item Two'}
+        {this.state.tab === 1 && <HistoryRates />}
       </div>
     );
   }

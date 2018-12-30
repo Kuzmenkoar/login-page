@@ -1,38 +1,37 @@
-import { USD, MXN, CAD, GBP, EUR, JPY } from '../../constants/currency';
 import {
-  TODAY_RATES_REJECT,
-  TODAY_RATES_REQUEST,
-  TODAY_RATES_SUCCESS,
-} from './today-rates.constants';
+  HISTORICAL_RATES_REJECT,
+  HISTORICAL_RATES_REQUEST,
+  HISTORICAL_RATES_SUCCESS,
+} from './historical-rates.constants';
 
 const initialState = {
-  base: USD,
+  period: '1',
   rates: {},
   isFetching: true,
   errorMessage: '',
 };
 
-export const moduleName = 'todayRates';
+export const moduleName = 'historicalRates';
 
 const reducer = (state = initialState, action) => {
   const { type } = action;
 
   switch (type) {
-    case TODAY_RATES_REQUEST:
+    case HISTORICAL_RATES_REQUEST:
       return {
         ...state,
         isFetching: true,
-        base: action.base,
         errorMessage: '',
+        period: action.period,
       };
-    case TODAY_RATES_SUCCESS:
+    case HISTORICAL_RATES_SUCCESS:
       return {
         ...state,
         rates: action.rates,
         isFetching: false,
         errorMessage: '',
       };
-    case TODAY_RATES_REJECT:
+    case HISTORICAL_RATES_REJECT:
       return { ...state, errorMessage: action.message, isFetching: false };
 
     default:

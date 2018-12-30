@@ -4,3 +4,4 @@ export const GBP = 'GBP';
 export const CAD = 'CAD';
 export const MXN = 'MXN';
 export const JPY = 'JPY';
+export const ILS = 'ILS';
