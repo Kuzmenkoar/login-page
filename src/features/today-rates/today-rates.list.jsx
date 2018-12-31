@@ -3,22 +3,20 @@ import { connect } from 'react-redux';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 
-import './today-rates.scss';
-import { moduleName as todayRates } from './today-rates.reducer';
 import Spinner from '../../components/spinner';
 import ErrorMessage from '../../components/error-message';
 import { moduleName as currencyConverter } from '../currency-container/currency-converter/currency-converter.reducer';
-import { ILS } from '../../constants/currency';
 
 const TodayRatesList = ({
-  isFetching,
   errorMessage,
+  currencyEnum,
   rates,
-  shouldPutIls,
-  ilsRate,
+  todayRateView,
 }) => {
-  if (isFetching) {
+  if (!currencyEnum.length) {
     return <Spinner />;
   }
 
@@ -27,15 +25,18 @@ const TodayRatesList = ({
   }
 
   return (
-    <List>
-      {shouldPutIls && (
-        <ListItem>
-          <ListItemText primary={ILS + ' : ' + ilsRate.toFixed(4)} />
-        </ListItem>
-      )}
-      {Object.keys(rates).map((el) => (
+    <List style={{ paddingRight: '10px' }}>
+      {todayRateView.map((el) => (
         <ListItem key={el}>
-          <ListItemText primary={el + ' : ' + rates[el].toFixed(4)} />
+          <ListItemAvatar>
+            <div
+              className={`currency-flag currency-flag-${el.toLowerCase()}`}
+            />
+          </ListItemAvatar>
+          <ListItemText primary={el} />
+          <ListItemSecondaryAction>
+            {rates[el].toFixed(4)}
+          </ListItemSecondaryAction>
         </ListItem>
       ))}
     </List>
@@ -43,13 +44,10 @@ const TodayRatesList = ({
 };
 
 const mapStateToProps = (state) => ({
-  isFetching: state[todayRates].isFetching,
-  rates: state[todayRates].rates,
-  errorMessage: state[todayRates].errorMessage,
-  ilsRate: state[currencyConverter].ilsRate,
-  shouldPutIls:
-    state[currencyConverter].to !== ILS &&
-    state[currencyConverter].from !== ILS,
+  rates: state[currencyConverter].rates,
+  todayRateView: state[currencyConverter].todayRateView,
+  errorMessage: state[currencyConverter].errorMessage,
+  currencyEnum: state[currencyConverter].currencyEnum,
 });
 
 export default connect(mapStateToProps)(TodayRatesList);

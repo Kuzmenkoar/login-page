@@ -1,4 +1,3 @@
 import api from '../../../api/axios';
 
-export const currencyConverterApi = (base, symbol) =>
-  api.get(`latest?base=${base}${symbol ? `&symbols=${symbol}` : ''}`);
+export const currencyConverterApi = (base) => api.get(`latest?base=${base}`);

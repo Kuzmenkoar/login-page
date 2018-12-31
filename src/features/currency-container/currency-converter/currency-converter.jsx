@@ -1,10 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Input from '@material-ui/core/Input';
+import TextField from '@material-ui/core/TextField';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
+import OutlinedInput from '@material-ui/core/OutlinedInput';
+import Grid from '@material-ui/core/Grid';
 
-import { currencyConverterRequest } from './currency-converter.actions';
+import {
+  currencyConverterRequest,
+  currencyConverterChangeTarget,
+} from './currency-converter.actions';
 import { moduleName as currencyConverter } from './currency-converter.reducer';
 import { USD } from '../../../constants/currency';
 import Spinner from '../../../components/spinner';
@@ -30,22 +35,18 @@ class CurrencyConverter extends Component {
   };
 
   handleChangeFrom = (e) => {
-    const { to } = this.props;
-
-    this.props.currencyConverterRequest(e.target.value, to);
+    this.props.currencyConverterRequest(e.target.value);
   };
 
   handleChangeTo = (e) => {
-    const { from } = this.props;
-
-    this.props.currencyConverterRequest(from, e.target.value);
+    this.props.currencyConverterChangeTarget(e.target.value);
   };
 
   render() {
     const {
-      from,
-      to,
-      rate,
+      source,
+      target,
+      rates,
       currencyEnum,
       isFetching,
       errorMessage,
@@ -60,41 +61,119 @@ class CurrencyConverter extends Component {
     }
 
     return (
-      <div>
-        <Input
-          value={this.state.amount.toFixed(2)}
-          onChange={this.handleAmountChange}
-        />
-        <Select value={from} onChange={this.handleChangeFrom}>
-          {currencyEnum.map((el) => (
-            <MenuItem key={el} value={el}>
-              {el}
-            </MenuItem>
-          ))}
-        </Select>
-        <br />
-        <Input
-          value={isFetching ? '' : (this.state.amount * rate).toFixed(2)}
-          onChange={this.handleAmountChange}
-        />
-        <Select value={to} onChange={this.handleChangeTo}>
-          {currencyEnum.map((el) => (
-            <MenuItem key={el} value={el}>
-              {el}
-            </MenuItem>
-          ))}
-        </Select>
-        <br />
-        rate is {rate.toFixed(4)}
-      </div>
+      <Grid container spacing={24} style={{ height: '100%' }}>
+        <Grid container direction="column" justify="center">
+          <Grid
+            container
+            spacing={24}
+            direction="row"
+            justify="flex-end"
+            alignItems="center"
+          >
+            <Grid item xs={3}>
+              <TextField
+                value={this.state.amount.toFixed(2)}
+                onChange={this.handleAmountChange}
+                label="From"
+                margin="normal"
+                variant="outlined"
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <Select
+                value={source}
+                onChange={this.handleChangeFrom}
+                input={
+                  <OutlinedInput
+                    name="age"
+                    id="outlined-age-simple"
+                    style={{ minWidth: '250px', marginTop: '8px' }}
+                  />
+                }
+              >
+                {currencyEnum.map((el) => (
+                  <MenuItem key={el} value={el}>
+                    <Grid container direction="row" alignItems="center">
+                      <div
+                        className={`currency-flag currency-flag-${el.toLowerCase()}`}
+                        style={{ marginRight: '15px' }}
+                      />{' '}
+                      {el}
+                    </Grid>
+                  </MenuItem>
+                ))}
+              </Select>
+            </Grid>
+          </Grid>
+          <Grid
+            container
+            spacing={24}
+            direction="row"
+            justify="flex-end"
+            alignItems="center"
+          >
+            <Grid item xs={3}>
+              <TextField
+                value={
+                  isFetching
+                    ? ''
+                    : (this.state.amount * rates[target]).toFixed(2)
+                }
+                onChange={this.handleAmountChange}
+                label="To"
+                margin="normal"
+                variant="outlined"
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <Select
+                value={target}
+                onChange={this.handleChangeTo}
+                input={
+                  <OutlinedInput
+                    name="age"
+                    id="outlined-age-simple"
+                    style={{ minWidth: '250px', marginTop: '8px' }}
+                  />
+                }
+              >
+                {currencyEnum.map((el) => (
+                  <MenuItem key={el} value={el}>
+                    <Grid container direction="row" alignItems="center">
+                      <div
+                        className={`currency-flag currency-flag-${el.toLowerCase()}`}
+                        style={{ marginRight: '15px' }}
+                      />{' '}
+                      {el}
+                    </Grid>
+                  </MenuItem>
+                ))}
+              </Select>
+            </Grid>
+          </Grid>
+        </Grid>
+
+        <Grid
+          container
+          xs={12}
+          direction="column"
+          style={{ marginLeft: '40px' }}
+        >
+          <span>Your rate:</span>
+          <span style={{ fontWeight: 600 }}>
+            {source} 1 = {target} {isFetching ? '' : rates[target].toFixed(4)}
+          </span>
+          <span>Last updated {new Date().toDateString()}</span>
+        </Grid>
+      </Grid>
     );
   }
 }
 
 const mapStateToProps = (state) => ({
-  from: state[currencyConverter].from,
-  to: state[currencyConverter].to,
-  rate: state[currencyConverter].rate,
+  source: state[currencyConverter].source,
+  target: state[currencyConverter].target,
+  rates: state[currencyConverter].rates,
   currencyEnum: state[currencyConverter].currencyEnum,
   isFetching: state[currencyConverter].isFetching,
   errorMessage: state[currencyConverter].errorMessage,
@@ -102,6 +181,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
   currencyConverterRequest,
+  currencyConverterChangeTarget,
 };
 
 export default connect(

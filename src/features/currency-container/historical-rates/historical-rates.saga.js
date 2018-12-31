@@ -7,9 +7,9 @@ import {
   historicalRatesSuccess,
 } from './historical-rates.actions';
 
-export const historicalRatesSaga = function*({ period }) {
+export const historicalRatesSaga = function*({ period, source, target }) {
   try {
-    const response = yield call(historicalRatesApi, period);
+    const response = yield call(historicalRatesApi, period, source, target);
     const { rates } = response.data;
 
     yield put(historicalRatesSuccess(rates));

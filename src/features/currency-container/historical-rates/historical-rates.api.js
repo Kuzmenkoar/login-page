@@ -10,13 +10,13 @@ const getDateAndMonth = (currDate, period) => {
   return `${currDate.getFullYear() - 1}-${12 + restMonth}`;
 };
 
-export const historicalRatesApi = (period) => {
+export const historicalRatesApi = (period, base, symbol) => {
   const currDate = new Date();
   const endDate = `${currDate.getFullYear()}-${currDate.getMonth() +
     1}-${currDate.getDate()}`;
   const startDate = `${getDateAndMonth(currDate, period)}-01`;
 
   return api.get(
-    `history?start_at=${startDate}&end_at=${endDate}&symbols=ILS&base=USD`,
+    `history?start_at=${startDate}&end_at=${endDate}&symbols=${symbol}&base=${base}`,
   );
 };

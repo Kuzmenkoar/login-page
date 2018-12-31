@@ -7,9 +7,9 @@ import {
 } from './currency-converter.actions';
 import { CURRENCY_CONVERTER_REQUEST } from './currency-converter.constants';
 
-export const currencyConverterSaga = function*({ from, to }) {
+export const currencyConverterSaga = function*({ source }) {
   try {
-    const response = yield call(currencyConverterApi, from, to);
+    const response = yield call(currencyConverterApi, source);
     const { rates } = response.data;
 
     yield put(currencyConverterSuccess(rates));

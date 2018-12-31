@@ -14,7 +14,7 @@ class App extends Component {
         <Fragment>
           {/*<Popup />*/}
           <ConnectedRouter history={history}>
-              <Root />
+            <Root />
           </ConnectedRouter>
         </Fragment>
       </Provider>

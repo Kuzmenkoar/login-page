@@ -4,8 +4,10 @@ import {
   HISTORICAL_RATES_SUCCESS,
 } from './historical-rates.constants';
 
-export const historicalRatesRequest = (period) => ({
+export const historicalRatesRequest = (period, source, target) => ({
   type: HISTORICAL_RATES_REQUEST,
+  source,
+  target,
   period,
 });
 

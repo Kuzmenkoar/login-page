@@ -6,21 +6,24 @@ import Tab from '@material-ui/core/Tab';
 import './historical-rates.scss';
 import { historicalRatesRequest } from './historical-rates.actions';
 import { moduleName as historicalRates } from './historical-rates.reducer';
+import { moduleName as currencyConverter } from '../currency-converter/currency-converter.reducer';
 import HistoricalRatesGraph from './historical-rates.graph';
 
 class HistoricalRates extends Component {
   componentDidMount() {
-    const { period } = this.props;
+    const { period, source, target } = this.props;
 
-    this.props.historicalRatesRequest(period);
+    this.props.historicalRatesRequest(period, source, target);
   }
 
   handleChange = (e, value) => {
-    this.props.historicalRatesRequest(value);
+    const { source, target } = this.props;
+
+    this.props.historicalRatesRequest(value, source, target);
   };
 
   render() {
-    const { rates, period } = this.props;
+    const { period } = this.props;
 
     return (
       <div className="historical-rates">
@@ -39,6 +42,8 @@ class HistoricalRates extends Component {
 const mapStateToProps = (state) => ({
   rates: state[historicalRates].rates,
   period: state[historicalRates].period,
+  source: state[currencyConverter].source,
+  target: state[currencyConverter].target,
 });
 
 const mapDispatchToProps = {

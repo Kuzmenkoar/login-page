@@ -6,12 +6,16 @@ import {
 
 const initialState = {
   period: '1',
-  rates: {},
+  rates: [],
   isFetching: true,
   errorMessage: '',
 };
 
 export const moduleName = 'historicalRates';
+
+const sortByDate = (a, b) => {
+  return new Date(a.date) - new Date(b.date);
+};
 
 const reducer = (state = initialState, action) => {
   const { type } = action;
@@ -27,7 +31,13 @@ const reducer = (state = initialState, action) => {
     case HISTORICAL_RATES_SUCCESS:
       return {
         ...state,
-        rates: action.rates,
+        rates: Object.keys(action.rates)
+          .map((el) => {
+            const rate = Object.values(action.rates[el])[0].toFixed(4);
+
+            return { date: el, rate };
+          })
+          .sort(sortByDate),
         isFetching: false,
         errorMessage: '',
       };
