@@ -85,6 +85,7 @@ class CurrencyConverter extends Component {
                 onChange={this.handleChangeFrom}
                 input={
                   <OutlinedInput
+                    labelWidth={0}
                     name="age"
                     id="outlined-age-simple"
                     style={{ minWidth: '250px', marginTop: '8px' }}
@@ -131,6 +132,7 @@ class CurrencyConverter extends Component {
                 onChange={this.handleChangeTo}
                 input={
                   <OutlinedInput
+                    labelWidth={0}
                     name="age"
                     id="outlined-age-simple"
                     style={{ minWidth: '250px', marginTop: '8px' }}
@@ -153,12 +155,7 @@ class CurrencyConverter extends Component {
           </Grid>
         </Grid>
 
-        <Grid
-          container
-          xs={12}
-          direction="column"
-          style={{ marginLeft: '40px' }}
-        >
+        <Grid container direction="column" style={{ marginLeft: '40px' }}>
           <span>Your rate:</span>
           <span style={{ fontWeight: 600 }}>
             {source} 1 = {target} {isFetching ? '' : rates[target].toFixed(4)}

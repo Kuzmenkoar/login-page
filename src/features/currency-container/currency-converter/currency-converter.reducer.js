@@ -43,7 +43,9 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         target: action.target,
-        todayRateView: [state.target].concat(state.todayRateView.slice(0, 4)),
+        todayRateView: state.todayRateView.includes(state.target)
+          ? state.todayRateView
+          : [state.target].concat(state.todayRateView.slice(0, 4)),
       };
 
     case CURRENCY_CONVERTER_REJECT:

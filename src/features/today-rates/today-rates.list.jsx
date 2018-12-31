@@ -5,6 +5,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import Avatar from '@material-ui/core/Avatar';
 
 import Spinner from '../../components/spinner';
 import ErrorMessage from '../../components/error-message';
@@ -29,9 +30,11 @@ const TodayRatesList = ({
       {todayRateView.map((el) => (
         <ListItem key={el}>
           <ListItemAvatar>
-            <div
-              className={`currency-flag currency-flag-${el.toLowerCase()}`}
-            />
+            <Avatar style={{ backgroundColor: '#fff' }}>
+              <div
+                className={`currency-flag currency-flag-${el.toLowerCase()}`}
+              />
+            </Avatar>
           </ListItemAvatar>
           <ListItemText primary={el} />
           <ListItemSecondaryAction>
