@@ -1,6 +1,7 @@
 # Third-party modules#
 ######################
 /node_modules
+.idea/
 
 # Other folders #
 #################
