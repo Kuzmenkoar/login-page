@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Route, Redirect, Switch } from 'react-router-dom';
+import { Route, Switch, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import Header from '../components/header/header';
@@ -7,36 +7,26 @@ import SignInForm from './authorization/SignInForm';
 import SignUpForm from './authorization/SignUpForm';
 import Contacts from './contacts';
 
-import { signIn, signUp } from '../ducks/authorization';
-// import Loader from './common/loader'
+import { signInRequest, signUpRequest } from '../ducks/authorization';
 
-import { RouteNotFound, ProtectedRoute } from '../components/route';
+import { ProtectedRoute } from '../components/route';
 
 class Root extends Component {
   render() {
-    // if (!this.props.firstContact) {
-    //   return (
-    //     <div style={{ height: '200px', position: 'relative' }}>
-    //       <Loader />
-    //     </div>
-    //   )
-    // }
-
     return (
       <div>
         <Header />
         <Switch>
-          <ProtectedRoute path="/people" component={Contacts} />
+          <ProtectedRoute path="/contacts" component={Contacts} />
           <Route
             path="/signIn"
-            render={() => <SignInForm onSubmit={this.props.signIn} />}
+            render={() => <SignInForm onSubmit={this.props.signInRequest} />}
           />
           <Route
             path="/signUp"
-            render={() => <SignUpForm onSubmit={this.props.signUp} />}
+            render={() => <SignUpForm onSubmit={this.props.signUpRequest} />}
           />
-          <Redirect exact from="/" to="/people" />
-          <RouteNotFound />
+          <Redirect to="/signIn" />
         </Switch>
       </div>
     );
@@ -52,5 +42,5 @@ const mapStateToProps = ({ router, authorization: { firstContact } }) => {
 
 export default connect(
   mapStateToProps,
-  { signIn, signUp },
+  { signInRequest, signUpRequest },
 )(Root);

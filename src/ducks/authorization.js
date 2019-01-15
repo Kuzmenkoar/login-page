@@ -1,147 +1,103 @@
 import { Record } from 'immutable';
-import { all, put, take, call } from 'redux-saga/effects';
+import { all, put, takeEvery } from 'redux-saga/effects';
 
-import { eventChannel } from 'redux-saga';
+import api from '../api/axios';
+import history from '../history';
 
 export const moduleName = 'authorization';
 export const SIGN_IN_REQUEST = 'SIGN_IN_REQUEST';
 export const SIGN_IN_SUCCESS = 'SIGN_IN_SUCCESS';
 export const SIGN_IN_ERROR = 'SIGN_IN_ERROR';
-export const SIGN_OUT_REQUEST = 'SIGN_OUT_REQUEST';
-export const SIGN_OUT_SUCCESS = 'SIGN_OUT_SUCCESS';
+
 export const SIGN_UP_REQUEST = 'SIGN_UP_REQUEST';
+export const SIGN_UP_SUCCESS = 'SIGN_UP_SUCCESS';
 export const SIGN_UP_ERROR = 'SIGN_UP_ERROR';
 export const CLEAR_ERROR = 'CLEAR_ERROR';
 
 const ReducerRecord = Record({
   user: null,
-  isLoading: true,
+  isLoading: false,
   error: null,
 });
 
 export default function reducer(state = new ReducerRecord(), action) {
-  const { type, payload, error } = action;
+  const { type } = action;
 
   switch (type) {
     case SIGN_IN_REQUEST:
-    case SIGN_OUT_REQUEST:
       return state.set('isLoading', true);
     case SIGN_IN_SUCCESS:
-    case SIGN_OUT_SUCCESS:
-      return state
-        .set('user', payload)
-        .set('isLoading', false)
-        .set('firstContact', true);
+      return state.set('isLoading', false).set('user', action.user);
     case SIGN_IN_ERROR:
-    case CLEAR_ERROR:
-      return state.set('error', error).set('isLoading', false);
+      return state.set('isLoading', false);
+
+    case SIGN_UP_REQUEST:
+      return state.set('isLoading', true);
+    case SIGN_UP_SUCCESS:
+      return state.set('isLoading', false);
+    case SIGN_UP_ERROR:
+      return state.set('isLoading', false);
+
     default:
       return state;
   }
 }
 
-export const signIn = (data) => ({
+export const signInRequest = (data) => ({
   type: SIGN_IN_REQUEST,
-  payload: data,
+  data,
 });
 
-export const signOut = () => ({
-  type: SIGN_OUT_REQUEST,
+export const signInSuccess = (user) => ({
+  type: SIGN_IN_SUCCESS,
+  user,
 });
 
-export const signUp = (data) => ({
+export const signInReject = () => ({
+  type: SIGN_IN_ERROR,
+});
+
+export const signUpRequest = (data) => ({
   type: SIGN_UP_REQUEST,
-  payload: data,
+  data,
 });
 
-export const clearError = () => ({
-  type: CLEAR_ERROR,
+export const signUpSuccess = () => ({
+  type: SIGN_IN_SUCCESS,
 });
 
-export const signInSaga = function*() {
-  const auth = firebase.auth();
+export const signUpReject = () => ({
+  type: SIGN_UP_ERROR,
+});
 
-  while (true) {
-    const action = yield take(SIGN_IN_REQUEST);
-    const { email, password } = action.payload;
+const signInApi = (data) => api.post('login', data);
 
-    try {
-      yield call([auth, auth.signInWithEmailAndPassword], email, password);
-    } catch (error) {
-      yield put({
-        type: SIGN_IN_ERROR,
-        error,
-      });
-    }
+const signInSaga = function*({ data }) {
+  try {
+    const response = yield signInApi(data);
+    yield put(signInSuccess(response));
+    yield history.push('./contacts');
+  } catch (e) {
+    yield put(signInReject());
   }
 };
 
-export const signUpSaga = function*() {
-  const auth = firebase.auth();
+const signUpApi = (data) =>
+  api.post('6vf77z4hd5', { ...data, invite: 'rtASDLastuev77' });
 
-  while (true) {
-    const action = yield take(SIGN_UP_REQUEST);
-    const { email, password } = action.payload;
-
-    try {
-      yield call([auth, auth.createUserWithEmailAndPassword], email, password);
-    } catch (error) {
-      yield put({
-        type: SIGN_UP_ERROR,
-        error,
-      });
-    }
-  }
-};
-
-export const signOutSaga = function*() {
-  const auth = firebase.auth();
-
-  while (true) {
-    yield take(SIGN_OUT_REQUEST);
-
-    try {
-      yield call([auth, auth.signOut]);
-    } catch (error) {
-      yield put({
-        type: SIGN_IN_ERROR,
-        error,
-      });
-    }
-  }
-};
-
-const createAuthChannel = () =>
-  eventChannel((emit) =>
-    firebase.auth().onAuthStateChanged((user) => emit({ user })),
-  );
-
-export const userAuthorizationStatus = function*() {
-  const chan = yield call(createAuthChannel);
-
-  while (true) {
-    const data = yield take(chan);
-    const { user } = data;
-
-    if (user) {
-      yield put({
-        type: SIGN_IN_SUCCESS,
-        payload: user,
-      });
-    } else {
-      yield put({
-        type: SIGN_OUT_SUCCESS,
-        payload: user,
-      });
-    }
+const signUpSaga = function*({ data }) {
+  try {
+    const response = yield signUpApi(data);
+    yield put(signUpSuccess(response));
+    yield history.push('./signIn');
+  } catch (e) {
+    yield put(signUpReject());
   }
 };
 
 export const saga = function*() {
   yield all([
-    signInSaga(),
-    userAuthorizationStatus(),
-    signOutSaga(),
-    signUpSaga(),
+    takeEvery(SIGN_UP_REQUEST, signUpSaga),
+    takeEvery(SIGN_IN_REQUEST, signInSaga),
   ]);
 };

@@ -3,7 +3,7 @@ import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
 
 import history from './history';
-import { Root } from './features/root';
+import Root from './features/root';
 import store from './redux';
 
 class App extends Component {
